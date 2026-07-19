@@ -4,3 +4,8 @@ html body a[href]::before,
 html body a[href]::after {
   cursor: pointer !important;
 }
+
+a[href] {
+  display: inline-block;
+  max-width: 100%;
+}
