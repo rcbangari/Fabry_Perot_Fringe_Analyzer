@@ -1,19 +1,19 @@
 :root {
-  --subheading-text: #514f47;
+  --subheading-text: #526781;
 }
 
 :root[data-theme="dark"] {
-  --subheading-text: #d8d2bd;
+  --subheading-text: #b8c7e3;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --subheading-text: #d8d2bd;
+    --subheading-text: #b8c7e3;
   }
 }
 
 html body a[href] {
-  color: var(--blue) !important;
+  color: var(--cobalt) !important;
 }
 
 .hero p,
