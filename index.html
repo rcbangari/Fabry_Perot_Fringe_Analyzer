@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Fabry–Pérot Fringe Analyzer</title>
+  <meta name="description" content="Estimate film thickness, real permittivity, and birefringence from Fabry–Pérot spectral fringes.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+<main>
+  <header class="masthead"><span>FRINGE / 01</span><span class="crosshair">⊕</span><span>FP ANALYZER v1.0</span></header>
+
+  <section class="hero">
+    <div><h1>FABRY–PÉROT<br>FRINGE ANALYZER</h1><p>Turn spectral fringes into film thickness and birefringence.</p></div>
+    <div class="upload-panel">
+      <input id="spectrum-file" type="file" accept=".csv,.txt,.dat" hidden>
+      <button class="upload" id="upload-button" type="button"><span class="upload-icon">↑</span><span><b>UPLOAD SPECTRUM</b><small>CSV, TXT · TWO COLUMNS</small></span></button>
+      <label>IMPORT AS<select id="upload-family"><option value="ordinary">ordinary family</option><option value="extraordinary">extraordinary family</option></select></label>
+    </div>
+    <div class="manual-callout"><span class="keycap">⌨</span><a href="#inputs">ENTER PEAKS MANUALLY</a></div>
+  </section>
+
+  <section class="modebar">
+    <div class="segmented" aria-label="Optical model">
+      <button id="isotropic-button" type="button">ISOTROPIC</button>
+      <button id="birefringent-button" class="active" type="button">BIREFRINGENT</button>
+    </div>
+    <span class="status" id="status">● Demo fringe families loaded</span>
+    <button class="demo" id="reset-button" type="button">RESET DEMO</button>
+  </section>
+
+  <section class="workspace">
+    <div class="visual-column">
+      <div class="plot-wrap" aria-label="Fringe-position visualization">
+        <div class="plot-topline"><span>SPECTRAL RESPONSE</span><div class="legend"><i class="dot red"></i> O peaks <span id="e-legend"><i class="dot blue"></i> E peaks</span></div></div>
+        <svg id="spectrum-plot" viewBox="0 0 860 300" role="img" aria-label="Detected Fabry–Pérot fringe peaks plotted against wavenumber"></svg>
+      </div>
+      <div class="plot-foot"><span id="peak-count"></span><span id="plot-settings"></span></div>
+    </div>
+
+    <aside class="results" aria-live="polite">
+      <div class="result red"><span id="o-result-label">O THICKNESS</span><strong id="o-result">—</strong><small id="o-result-sub">Need ≥2 peaks</small></div>
+      <div class="result blue" id="e-result-card"><span id="e-result-label">E THICKNESS</span><strong id="e-result">—</strong><small id="e-result-sub">Need ≥2 peaks</small></div>
+      <div class="result"><span>BIREFRINGENCE Δn</span><strong id="birefringence-result">—</strong><small id="birefringence-sub">—</small></div>
+      <div class="result"><span id="comparison-label">CONSISTENCY</span><strong id="comparison-result">—</strong><small id="comparison-sub">—</small></div>
+      <button class="export" id="export-button" type="button">⇩&nbsp;&nbsp; EXPORT RESULTS <span>→</span></button>
+    </aside>
+  </section>
+
+  <section class="controls" id="inputs">
+    <div class="control-title"><span>ANALYSIS INPUTS</span><span>Assumes adjacent extrema and negligible index dispersion over each selected range.</span></div>
+    <div class="control-grid">
+      <label class="field"><span>SOLVE FOR</span><div><select id="goal"><option value="thickness">film thickness</option><option value="permittivity">relative permittivity</option></select></div></label>
+      <label class="field"><span>SPECTRAL UNIT</span><div><select id="spectral-unit"><option value="cm-1">wavenumber (cm⁻¹)</option><option value="nm">wavelength (nm)</option></select></div></label>
+      <label class="field"><span>INCIDENCE ANGLE</span><div><input id="angle" type="number" min="0" max="85" step="0.1" value="0"><em>deg</em></div></label>
+      <label class="field" id="known-thickness-field" hidden><span>KNOWN THICKNESS</span><div><input id="known-thickness" type="number" min="0.001" step="0.01" value="20.25"><em>µm</em></div></label>
+      <label class="field" id="epsilon-o-field"><span id="epsilon-o-label">ORDINARY PERMITTIVITY εₒ</span><div><input id="epsilon-o" type="number" min="1.001" step="0.01" value="5.76"></div></label>
+      <label class="field" id="epsilon-e-field"><span>EXTRAORDINARY PERMITTIVITY εₑ</span><div><input id="epsilon-e" type="number" min="1.001" step="0.01" value="6.6564"></div></label>
+      <label class="field"><span>KNOWN-VALUE UNCERTAINTY</span><div><input id="known-uncertainty" type="number" min="0" step="0.001" value="0.02"></div></label>
+      <label class="field" id="axis-field"><span>POLARIZATION / OPTIC AXIS</span><div><input id="axis-angle" type="range" min="0" max="90" value="45"><em id="axis-value">45°</em></div></label>
+      <label class="field" id="retardance-field"><span>RETARDANCE WAVELENGTH</span><div><input id="reference-wavelength" type="number" min="1" value="1550"><em>nm</em></div></label>
+    </div>
+    <div class="peak-entry">
+      <label><span><i class="dot red"></i> ORDINARY PEAK POSITIONS</span><textarea id="ordinary-peaks"></textarea></label>
+      <label id="extraordinary-peaks-field"><span><i class="dot blue"></i> EXTRAORDINARY PEAK POSITIONS</span><textarea id="extraordinary-peaks"></textarea></label>
+    </div>
+    <p class="method-note"><b>MODEL NOTE —</b> At oblique incidence the calculator applies Snell’s law separately to each principal phase index, using n = √εᵣ. In birefringent mode, O and E fringe families must be identified independently; polarization angle reports expected intensity weights Iₒ ∝ sin²φ and Iₑ ∝ cos²φ, not a full Berreman simulation. Fringe spacing alone estimates real εᵣ under low-loss, weak-dispersion assumptions; complex ε requires additional intensity or phase data.</p>
+  </section>
+
+  <footer><span>CLIENT-SIDE · NO DATA UPLOADED TO A SERVER</span><span>FABRY–PÉROT CONDITION: 2n d cos θₜ = mλ</span></footer>
+</main>
+</body>
+</html>

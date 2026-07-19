@@ -32,20 +32,9 @@ The permittivity mode reports `εᵣ = n²`. This is a phase-index estimate unde
 
 In birefringent mode, ordinary and extraordinary fringe families must be identified independently. The current oblique-incidence calculation applies Snell's law to each supplied principal phase index; it is not a full anisotropic Berreman calculation.
 
-## Development
+## Development and deployment
 
-Requires Node.js 22.13 or newer.
-
-```bash
-npm ci
-npm run dev
-```
-
-Production validation:
-
-```bash
-npm run build
-```
+The analyzer is dependency-free static HTML, CSS, and JavaScript. Open `index.html` locally or serve the repository root with any static file server. GitHub Pages publishes directly from the `main` branch.
 
 ## Input format
 
