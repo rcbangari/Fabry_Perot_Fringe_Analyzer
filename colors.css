@@ -12,13 +12,6 @@
   }
 }
 
-html body a[href],
-html body a[href] *,
-html body a[href]::before,
-html body a[href]::after {
-  cursor: pointer !important;
-}
-
 html body a[href] {
   color: var(--blue) !important;
 }
@@ -27,9 +20,4 @@ html body a[href] {
 .method-note,
 .control-title span:last-child {
   color: var(--subheading-text) !important;
-}
-
-a[href] {
-  display: inline-block;
-  max-width: 100%;
 }
