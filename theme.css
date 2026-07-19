@@ -13,3 +13,4 @@ footer a{color:var(--blue);text-underline-offset:4px}
 :root[data-theme="dark"] .result small,:root[data-theme="dark"] .control-title span:last-child,:root[data-theme="dark"] .method-note{color:#d8d2bd}
 :root[data-theme="dark"] .plot-bg,:root[data-theme="dark"] .field>div,:root[data-theme="dark"] .peak-entry textarea,:root[data-theme="dark"] .upload-panel{background:rgba(254,250,224,.06)}
 @media(max-width:680px){.site-header{width:calc(100% - 28px);min-height:68px}.theme-toggle>span:first-child{display:none}}
+html,body{overscroll-behavior-y:none}body{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}body>main{flex:1 0 auto}
