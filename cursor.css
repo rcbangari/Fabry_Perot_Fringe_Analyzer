@@ -1,6 +1,6 @@
-a[href],
-a[href] *,
-a[href]::before,
-a[href]::after {
-  cursor: pointer;
+html body a[href],
+html body a[href] *,
+html body a[href]::before,
+html body a[href]::after {
+  cursor: pointer !important;
 }
