@@ -1,16 +1,13 @@
 :root {
-  --link-gold: #9a6700;
   --subheading-text: #514f47;
 }
 
 :root[data-theme="dark"] {
-  --link-gold: #f2c66d;
   --subheading-text: #d8d2bd;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --link-gold: #f2c66d;
     --subheading-text: #d8d2bd;
   }
 }
@@ -23,7 +20,7 @@ html body a[href]::after {
 }
 
 html body a[href] {
-  color: var(--link-gold) !important;
+  color: var(--blue) !important;
 }
 
 .hero p,
