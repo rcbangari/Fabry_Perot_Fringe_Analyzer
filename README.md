@@ -49,6 +49,6 @@ wavenumber,intensity
 
 The first column is interpreted according to the selected spectral unit. For overlapping birefringent branches, import or manually enter each identified family separately.
 
-## License
+## Copyright and license
 
-MIT
+Copyright © 2026 Ramachandra Bangari. Licensed under the [MIT License](LICENSE).
