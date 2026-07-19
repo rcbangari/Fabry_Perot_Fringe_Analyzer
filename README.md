@@ -49,6 +49,8 @@ wavenumber,intensity
 
 The first column is interpreted according to the selected spectral unit. For overlapping birefringent branches, import or manually enter each identified family separately.
 
+A synthetic eight-peak file is included at [`samples/test-spectrum.csv`](samples/test-spectrum.csv). Its maxima are separated by 100 cm⁻¹; with εᵣ = 5.76 at normal incidence, the expected thickness is approximately 20.83 µm in full-cavity mode or 10.42 µm in half-cavity mode.
+
 ## Copyright and license
 
 Copyright © 2026 Ramachandra Bangari. Licensed under the [MIT License](LICENSE).

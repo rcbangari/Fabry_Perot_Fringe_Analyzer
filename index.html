@@ -11,10 +11,10 @@
     if (saved === "light" || saved === "dark") document.documentElement.dataset.theme = saved;
   })();
   </script>
-  <link rel="icon" href="favicon.svg?v=20260719-2" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=20260719-1">
-  <link rel="stylesheet" href="theme.css?v=20260719-2">
-  <link rel="stylesheet" href="colors.css?v=20260719-1">
+  <link rel="icon" href="https://rcbangari.github.io/favicon.svg?v=20260719-2" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=20260719-3">
+  <link rel="stylesheet" href="theme.css?v=20260719-3">
+  <link rel="stylesheet" href="colors.css?v=20260719-2">
   <script src="app.js?v=20260719-2" defer></script>
 </head>
 <body>
@@ -25,49 +25,38 @@
   </button>
 </header>
 <main>
-  <header class="masthead"><span>FRINGE / 01</span><span class="crosshair">⊕</span><span>FP ANALYZER v1.0</span></header>
-
   <section class="hero">
-    <div><h1>FABRY–PÉROT<br>FRINGE ANALYZER</h1><p>Turn spectral fringes into film thickness and birefringence.</p></div>
-    <div class="upload-panel">
-      <input id="spectrum-file" type="file" accept=".csv,.txt,.dat" hidden>
-      <button class="upload" id="upload-button" type="button"><span class="upload-icon">↑</span><span><b>UPLOAD SPECTRUM</b><small>CSV, TXT · TWO COLUMNS</small></span></button>
-      <label>IMPORT AS<select id="upload-family"><option value="ordinary">ordinary family</option><option value="extraordinary">extraordinary family</option></select></label>
-    </div>
-    <div class="manual-callout"><span class="keycap">⌨</span><a href="#inputs">ENTER PEAKS MANUALLY</a></div>
-  </section>
-
-  <section class="modebar">
-    <div class="segmented" aria-label="Optical model">
-      <button id="isotropic-button" type="button">ISOTROPIC</button>
-      <button id="birefringent-button" class="active" type="button">BIREFRINGENT</button>
-    </div>
-    <span class="status" id="status">● Demo fringe families loaded</span>
-    <button class="demo" id="reset-button" type="button">RESET DEMO</button>
-  </section>
-
-  <section class="workspace">
-    <div class="visual-column">
-      <div class="plot-wrap" aria-label="Fringe-position visualization">
-        <div class="plot-topline"><span>SPECTRAL RESPONSE</span><div class="legend"><i class="dot red"></i> O peaks <span id="e-legend"><i class="dot blue"></i> E peaks</span></div></div>
-        <svg id="spectrum-plot" viewBox="0 0 860 300" role="img" aria-label="Detected Fabry–Pérot fringe peaks plotted against wavenumber"></svg>
-      </div>
-      <div class="plot-foot"><span id="peak-count"></span><span id="plot-settings"></span></div>
-    </div>
-
-    <aside class="results" aria-live="polite">
-      <div class="result red"><span id="o-result-label">O THICKNESS</span><strong id="o-result">—</strong><small id="o-result-sub">Need ≥2 peaks</small></div>
-      <div class="result blue" id="e-result-card"><span id="e-result-label">E THICKNESS</span><strong id="e-result">—</strong><small id="e-result-sub">Need ≥2 peaks</small></div>
-      <div class="result"><span>BIREFRINGENCE Δn</span><strong id="birefringence-result">—</strong><small id="birefringence-sub">—</small></div>
-      <div class="result"><span id="comparison-label">CONSISTENCY</span><strong id="comparison-result">—</strong><small id="comparison-sub">—</small></div>
-      <button class="export" id="export-button" type="button">⇩&nbsp;&nbsp; EXPORT RESULTS <span>→</span></button>
-    </aside>
+    <div class="hero-copy"><h1>Fabry–Pérot Fringe Analyzer</h1><p>Turn spectral fringes into film thickness and birefringence.</p></div>
   </section>
 
   <section class="controls" id="inputs">
     <div class="control-title"><span>ANALYSIS INPUTS</span><span>Assumes adjacent extrema and negligible index dispersion over each selected range.</span></div>
+    <div class="goal-toolbar" aria-label="Solve for">
+      <span>SOLVE FOR</span>
+      <div class="goal-segmented">
+        <button id="goal-thickness" class="active" type="button" aria-pressed="true">FILM THICKNESS</button>
+        <button id="goal-permittivity" type="button" aria-pressed="false">RELATIVE PERMITTIVITY εᵣ</button>
+      </div>
+      <select id="goal" hidden aria-hidden="true"><option value="thickness" selected>film thickness</option><option value="permittivity">relative permittivity</option></select>
+    </div>
+    <div class="formula-strip">
+      <span>FABRY–PÉROT CONDITION</span>
+      <div class="cavity-switch" aria-label="Cavity convention">
+        <button id="full-cavity" class="active" type="button" aria-pressed="true">FULL CAVITY</button>
+        <button id="half-cavity" type="button" aria-pressed="false">HALF CAVITY</button>
+      </div>
+      <strong id="cavity-equation">2n d cos θₜ = mλ</strong>
+    </div>
+    <div class="modebar">
+      <span class="mode-label">OPTICAL MODEL</span>
+      <div class="segmented" aria-label="Optical model">
+        <button id="isotropic-button" class="active" type="button" aria-pressed="true">ISOTROPIC</button>
+        <button id="birefringent-button" type="button" aria-pressed="false">BIREFRINGENT</button>
+      </div>
+      <span class="status" id="status">● Demo fringe families loaded</span>
+      <button class="demo" id="reset-button" type="button">RESET DEMO</button>
+    </div>
     <div class="control-grid">
-      <label class="field"><span>SOLVE FOR</span><div><select id="goal"><option value="thickness">film thickness</option><option value="permittivity">relative permittivity</option></select></div></label>
       <label class="field"><span>SPECTRAL UNIT</span><div><select id="spectral-unit"><option value="cm-1">wavenumber (cm⁻¹)</option><option value="nm">wavelength (nm)</option></select></div></label>
       <label class="field"><span>INCIDENCE ANGLE</span><div><input id="angle" type="number" min="0" max="85" step="0.1" value="0"><em>deg</em></div></label>
       <label class="field" id="known-thickness-field" hidden><span>KNOWN THICKNESS</span><div><input id="known-thickness" type="number" min="0.001" step="0.01" value="20.25"><em>µm</em></div></label>
@@ -77,14 +66,46 @@
       <label class="field" id="axis-field"><span>POLARIZATION / OPTIC AXIS</span><div><input id="axis-angle" type="range" min="0" max="90" value="45"><em id="axis-value">45°</em></div></label>
       <label class="field" id="retardance-field"><span>RETARDANCE WAVELENGTH</span><div><input id="reference-wavelength" type="number" min="1" value="1550"><em>nm</em></div></label>
     </div>
-    <div class="peak-entry">
-      <label><span><i class="dot red"></i> ORDINARY PEAK POSITIONS</span><textarea id="ordinary-peaks"></textarea></label>
-      <label id="extraordinary-peaks-field"><span><i class="dot blue"></i> EXTRAORDINARY PEAK POSITIONS</span><textarea id="extraordinary-peaks"></textarea></label>
+    <div class="input-methods">
+      <div class="upload-panel">
+        <input id="spectrum-file" type="file" accept=".csv,.txt,.dat" hidden>
+        <button class="upload" id="upload-button" type="button"><span class="upload-icon">↑</span><span><b>UPLOAD SPECTRUM</b><small>CSV, TXT · TWO COLUMNS</small></span></button>
+        <label>IMPORT AS<select id="upload-family"><option value="ordinary">ordinary family</option><option value="extraordinary">extraordinary family</option></select></label>
+        <a class="sample-download" href="samples/test-spectrum.csv" download>DOWNLOAD TEST SPECTRUM</a>
+      </div>
+      <div class="input-method-side">
+        <div class="manual-callout"><span>ENTER PEAKS MANUALLY</span></div>
+        <div class="peak-entry" id="manual-peaks">
+          <label><span><i class="dot red"></i> ORDINARY PEAK POSITIONS</span><textarea id="ordinary-peaks"></textarea></label>
+          <label id="extraordinary-peaks-field"><span><i class="dot blue"></i> EXTRAORDINARY PEAK POSITIONS</span><textarea id="extraordinary-peaks"></textarea></label>
+        </div>
+      </div>
     </div>
-    <p class="method-note"><b>MODEL NOTE —</b> At oblique incidence the calculator applies Snell’s law separately to each principal phase index, using n = √εᵣ. In birefringent mode, O and E fringe families must be identified independently; polarization angle reports expected intensity weights Iₒ ∝ sin²φ and Iₑ ∝ cos²φ, not a full Berreman simulation. Fringe spacing alone estimates real εᵣ under low-loss, weak-dispersion assumptions; complex ε requires additional intensity or phase data.</p>
   </section>
 
-  <footer><span>CLIENT-SIDE · NO DATA UPLOADED TO A SERVER</span><span>FABRY–PÉROT CONDITION: 2n d cos θₜ = mλ</span><a href="https://rcbangari.github.io/">rcbangari.github.io</a><a href="https://github.com/rcbangari/Fabry_Perot_Fringe_Analyzer" target="_blank" rel="noopener noreferrer">GitHub repository</a><span>© 2026 Ramachandra Bangari · Website made with help from Codex · Last updated July 19, 2026</span></footer>
+  <section class="results-section" aria-labelledby="results-title">
+    <div class="control-title"><span id="results-title">RESULTS</span><span>Calculated from the current inputs and selected cavity convention.</span></div>
+    <section class="workspace">
+      <div class="visual-column">
+        <div class="plot-wrap" aria-label="Fringe-position visualization">
+          <div class="plot-topline"><span>SPECTRAL RESPONSE</span><div class="legend"><i class="dot red"></i> O peaks <span id="e-legend"><i class="dot blue"></i> E peaks</span></div></div>
+          <svg id="spectrum-plot" viewBox="0 0 860 300" role="img" aria-label="Detected Fabry–Pérot fringe peaks plotted against wavenumber"></svg>
+        </div>
+        <div class="plot-foot"><span id="peak-count"></span><span id="plot-settings"></span></div>
+      </div>
+
+      <aside class="results" aria-live="polite">
+        <div class="result red"><span id="o-result-label">O THICKNESS</span><strong id="o-result">—</strong><small id="o-result-sub">Need ≥2 peaks</small></div>
+        <div class="result blue" id="e-result-card"><span id="e-result-label">E THICKNESS</span><strong id="e-result">—</strong><small id="e-result-sub">Need ≥2 peaks</small></div>
+        <div class="result"><span>BIREFRINGENCE Δn</span><strong id="birefringence-result">—</strong><small id="birefringence-sub">—</small></div>
+        <div class="result"><span id="comparison-label">CONSISTENCY</span><strong id="comparison-result">—</strong><small id="comparison-sub">—</small></div>
+        <button class="export" id="export-button" type="button">⇩&nbsp;&nbsp; EXPORT RESULTS <span>→</span></button>
+      </aside>
+    </section>
+    <p class="method-note"><b>MODEL NOTE —</b> Full-cavity mode uses an optical-path factor of 2; half-cavity mode uses a factor of 4. At oblique incidence the calculator applies Snell’s law separately to each principal phase index, using n = √εᵣ. In birefringent mode, O and E fringe families must be identified independently; polarization angle reports expected intensity weights Iₒ ∝ sin²φ and Iₑ ∝ cos²φ, not a full Berreman simulation. Fringe spacing alone estimates real εᵣ under low-loss, weak-dispersion assumptions; complex ε requires additional intensity or phase data.</p>
+  </section>
+
+  <footer><span>CLIENT-SIDE · NO DATA UPLOADED TO A SERVER</span><a href="https://rcbangari.github.io/">rcbangari.github.io</a><a href="https://github.com/rcbangari/Fabry_Perot_Fringe_Analyzer" target="_blank" rel="noopener noreferrer">GitHub repository</a><span>© 2026 Ramachandra Bangari · Website made with help from Codex · Last updated July 19, 2026</span></footer>
 </main>
 </body>
 </html>

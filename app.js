@@ -1,6 +1,7 @@
 const DEMO_O=[1848.2,1950.7,2053.5,2156.1,2258.9,2361.2,2464,2566.6];
 const DEMO_E=[1876.4,1971.8,2067,2162.5,2257.8,2353.1,2448.6,2543.9];
-let birefringent=true;
+let birefringent=false;
+let cavityFactor=2;
 let latest={};
 const $=id=>document.getElementById(id);
 
@@ -15,13 +16,14 @@ document.querySelectorAll("a[href]").forEach((link) => {
 function parsePositions(raw,unit){return [...new Set(raw.split(/[\s,;]+/).map(Number).filter(v=>Number.isFinite(v)&&v>0).map(v=>unit==="nm"?1e7/v:v))].sort((a,b)=>a-b)}
 function spacingStats(values){if(values.length<2)return null;const gaps=values.slice(1).map((v,i)=>v-values[i]);const mean=gaps.reduce((a,b)=>a+b,0)/gaps.length;const variance=gaps.length>1?gaps.reduce((s,v)=>s+(v-mean)**2,0)/(gaps.length-1):0;return{mean,sem:Math.sqrt(variance)/Math.sqrt(gaps.length),gaps}}
 function internalCos(index,angle){const sine=Math.sin(angle*Math.PI/180)/Math.max(index,1.0001);return Math.sqrt(Math.max(0,1-sine*sine))}
-function thicknessFromSpacing(spacing,index,angle){return 1e4/(2*spacing*index*internalCos(index,angle))}
-function indexFromSpacing(spacing,thickness,angle){const optical=1e4/(2*spacing*thickness);const sine=Math.sin(angle*Math.PI/180);return Math.sqrt(optical**2+sine**2)}
+function thicknessFromSpacing(spacing,index,angle){return 1e4/(cavityFactor*spacing*index*internalCos(index,angle))}
+function indexFromSpacing(spacing,thickness,angle){const optical=1e4/(cavityFactor*spacing*thickness);const sine=Math.sin(angle*Math.PI/180);return Math.sqrt(optical**2+sine**2)}
 function fmt(value,digits=2){return value==null||!Number.isFinite(value)?"—":value.toFixed(digits)}
 function number(id,fallback){const value=Number($(id).value);return Number.isFinite(value)?value:fallback}
 function detectPeaks(rows){if(rows.length<5)return[];const ys=rows.map(row=>row[1]);const span=Math.max(...ys)-Math.min(...ys);const peaks=[];for(let i=2;i<rows.length-2;i++){const local=ys[i]>ys[i-1]&&ys[i]>=ys[i+1];const prominence=ys[i]-Math.min(ys[i-2],ys[i+2]);if(local&&prominence>span*.035)peaks.push(rows[i][0])}return peaks}
 
 function setMode(next){birefringent=next;$("isotropic-button").classList.toggle("active",!next);$("birefringent-button").classList.toggle("active",next);$("isotropic-button").setAttribute("aria-pressed",String(!next));$("birefringent-button").setAttribute("aria-pressed",String(next));render()}
+function setCavity(factor){cavityFactor=factor;$("full-cavity").classList.toggle("active",factor===2);$("half-cavity").classList.toggle("active",factor===4);$("full-cavity").setAttribute("aria-pressed",String(factor===2));$("half-cavity").setAttribute("aria-pressed",String(factor===4));$("cavity-equation").textContent=factor===2?"2n d cos θₜ = mλ":"4n d cos θₜ = mλ";render()}
 function setStatus(message){$("status").textContent=`● ${message}`}
 
 function calculate(){
@@ -62,6 +64,7 @@ function renderPlot(data){
 
 function render(){
   const data=calculate();latest=data;const thickness=data.goal==="thickness",unit=thickness?" µm":"";
+  $("goal-thickness").classList.toggle("active",thickness);$("goal-permittivity").classList.toggle("active",!thickness);$("goal-thickness").setAttribute("aria-pressed",String(thickness));$("goal-permittivity").setAttribute("aria-pressed",String(!thickness));$("birefringent-button").disabled=thickness;
   $("known-thickness-field").hidden=thickness;$("epsilon-o-field").hidden=!thickness;$("epsilon-e-field").hidden=!thickness||!birefringent;
   $("axis-field").hidden=!birefringent;$("retardance-field").hidden=!birefringent;$("extraordinary-peaks-field").hidden=!birefringent;$("e-result-card").hidden=!birefringent;$("e-legend").hidden=!birefringent;
   $("upload-family").disabled=!birefringent;$("epsilon-o-label").textContent=birefringent?"ORDINARY PERMITTIVITY εₒ":"RELATIVE PERMITTIVITY εᵣ";
@@ -84,6 +87,8 @@ function exportResults(){const d=latest;const rows=[["Fabry-Perot fringe analysi
 
 $("ordinary-peaks").value=DEMO_O.join(", ");$("extraordinary-peaks").value=DEMO_E.join(", ");
 document.querySelectorAll("input:not(#spectrum-file),select,textarea").forEach(element=>element.addEventListener("input",render));
+$("goal-thickness").addEventListener("click",()=>{$("goal").value="thickness";setMode(false)});$("goal-permittivity").addEventListener("click",()=>{$("goal").value="permittivity";render()});
+$("full-cavity").addEventListener("click",()=>setCavity(2));$("half-cavity").addEventListener("click",()=>setCavity(4));
 $("upload-button").addEventListener("click",()=>$("spectrum-file").click());$("spectrum-file").addEventListener("change",event=>handleFile(event.target.files?.[0]));
 $("isotropic-button").addEventListener("click",()=>setMode(false));$("birefringent-button").addEventListener("click",()=>setMode(true));
 $("reset-button").addEventListener("click",()=>{$("ordinary-peaks").value=DEMO_O.join(", ");$("extraordinary-peaks").value=DEMO_E.join(", ");setStatus("Demo fringe families restored");render()});
@@ -91,5 +96,5 @@ $("export-button").addEventListener("click",exportResults);
 const themeToggle=document.querySelector(".theme-toggle");
 const setTheme=theme=>{document.documentElement.dataset.theme=theme;localStorage.setItem("theme",theme);themeToggle.dataset.current=theme;themeToggle.setAttribute("aria-pressed",String(theme==="dark"));themeToggle.setAttribute("aria-label",`Switch to ${theme==="dark"?"light":"dark"} theme`)};
 const currentTheme=document.documentElement.dataset.theme||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
-themeToggle.dataset.current=currentTheme;themeToggle.setAttribute("aria-pressed",String(currentTheme==="dark"));themeToggle.addEventListener("click",()=>setTheme(themeToggle.dataset.current==="dark"?"light":"dark"));
+themeToggle.dataset.current=currentTheme;themeToggle.setAttribute("aria-pressed",String(currentTheme==="dark"));themeToggle.setAttribute("aria-label",`Switch to ${currentTheme==="dark"?"light":"dark"} theme`);themeToggle.addEventListener("click",()=>setTheme(themeToggle.dataset.current==="dark"?"light":"dark"));
 render();
