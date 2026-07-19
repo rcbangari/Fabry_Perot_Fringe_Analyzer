@@ -5,11 +5,24 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Fabry–Pérot Fringe Analyzer</title>
   <meta name="description" content="Estimate film thickness, real permittivity, and birefringence from Fabry–Pérot spectral fringes.">
+  <script>
+  (() => {
+    const saved = localStorage.getItem("theme");
+    if (saved === "light" || saved === "dark") document.documentElement.dataset.theme = saved;
+  })();
+  </script>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="theme.css">
   <script src="app.js" defer></script>
 </head>
 <body>
+<header class="site-header">
+  <a href="https://rcbangari.github.io/tools.html" class="back-link">rcbangari / tools</a>
+  <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
+    <span>Theme</span><span class="sun" aria-hidden="true">☀</span><span class="switch" aria-hidden="true"><i></i></span><span class="moon" aria-hidden="true">☾</span>
+  </button>
+</header>
 <main>
   <header class="masthead"><span>FRINGE / 01</span><span class="crosshair">⊕</span><span>FP ANALYZER v1.0</span></header>
 
@@ -70,7 +83,7 @@
     <p class="method-note"><b>MODEL NOTE —</b> At oblique incidence the calculator applies Snell’s law separately to each principal phase index, using n = √εᵣ. In birefringent mode, O and E fringe families must be identified independently; polarization angle reports expected intensity weights Iₒ ∝ sin²φ and Iₑ ∝ cos²φ, not a full Berreman simulation. Fringe spacing alone estimates real εᵣ under low-loss, weak-dispersion assumptions; complex ε requires additional intensity or phase data.</p>
   </section>
 
-  <footer><span>CLIENT-SIDE · NO DATA UPLOADED TO A SERVER</span><span>FABRY–PÉROT CONDITION: 2n d cos θₜ = mλ</span><span>© 2026 Ramachandra Bangari · Website made with help from Codex</span></footer>
+  <footer><span>CLIENT-SIDE · NO DATA UPLOADED TO A SERVER</span><span>FABRY–PÉROT CONDITION: 2n d cos θₜ = mλ</span><a href="https://rcbangari.github.io/">rcbangari.github.io</a><span>© 2026 Ramachandra Bangari · Website made with help from Codex</span></footer>
 </main>
 </body>
 </html>

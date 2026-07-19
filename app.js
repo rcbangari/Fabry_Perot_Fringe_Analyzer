@@ -79,4 +79,9 @@ document.querySelectorAll("input:not(#spectrum-file),select,textarea").forEach(e
 $("upload-button").addEventListener("click",()=>$("spectrum-file").click());$("spectrum-file").addEventListener("change",event=>handleFile(event.target.files?.[0]));
 $("isotropic-button").addEventListener("click",()=>setMode(false));$("birefringent-button").addEventListener("click",()=>setMode(true));
 $("reset-button").addEventListener("click",()=>{$("ordinary-peaks").value=DEMO_O.join(", ");$("extraordinary-peaks").value=DEMO_E.join(", ");setStatus("Demo fringe families restored");render()});
-$("export-button").addEventListener("click",exportResults);render();
+$("export-button").addEventListener("click",exportResults);
+const themeToggle=document.querySelector(".theme-toggle");
+const setTheme=theme=>{document.documentElement.dataset.theme=theme;localStorage.setItem("theme",theme);themeToggle.dataset.current=theme;themeToggle.setAttribute("aria-pressed",String(theme==="dark"));themeToggle.setAttribute("aria-label",`Switch to ${theme==="dark"?"light":"dark"} theme`)};
+const currentTheme=document.documentElement.dataset.theme||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
+themeToggle.dataset.current=currentTheme;themeToggle.setAttribute("aria-pressed",String(currentTheme==="dark"));themeToggle.addEventListener("click",()=>setTheme(themeToggle.dataset.current==="dark"?"light":"dark"));
+render();
