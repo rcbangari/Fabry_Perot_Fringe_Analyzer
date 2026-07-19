@@ -1,0 +1,6 @@
+a[href],
+a[href] *,
+a[href]::before,
+a[href]::after {
+  cursor: pointer;
+}
