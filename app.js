@@ -4,6 +4,14 @@ let birefringent=true;
 let latest={};
 const $=id=>document.getElementById(id);
 
+document.querySelectorAll("a[href]").forEach((link) => {
+  const destination = new URL(link.href, window.location.href);
+  if (/^https?:$/.test(destination.protocol) && destination.origin !== window.location.origin) {
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+  }
+});
+
 function parsePositions(raw,unit){return [...new Set(raw.split(/[\s,;]+/).map(Number).filter(v=>Number.isFinite(v)&&v>0).map(v=>unit==="nm"?1e7/v:v))].sort((a,b)=>a-b)}
 function spacingStats(values){if(values.length<2)return null;const gaps=values.slice(1).map((v,i)=>v-values[i]);const mean=gaps.reduce((a,b)=>a+b,0)/gaps.length;const variance=gaps.length>1?gaps.reduce((s,v)=>s+(v-mean)**2,0)/(gaps.length-1):0;return{mean,sem:Math.sqrt(variance)/Math.sqrt(gaps.length),gaps}}
 function internalCos(index,angle){const sine=Math.sin(angle*Math.PI/180)/Math.max(index,1.0001);return Math.sqrt(Math.max(0,1-sine*sine))}
